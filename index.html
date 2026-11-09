@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="tr" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gündem 360° — Günlük Küratörlü Dünya Haberleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Üst Bar / Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a class="brand" href="/">
+          <span class="brand-name">Gündem</span><span class="brand-num">360</span><sup class="brand-deg">°</sup>
+        </a>
+        <span class="header-pipe">|</span>
+        <div class="header-date" id="today">10 KASIM 2026 SALI</div>
+      </div>
+      
+      <div class="header-right">
+        <!-- Arama Butonu -->
+        <button class="icon-btn" id="searchBtn" aria-label="Haberlerde Ara" title="Haberlerde Ara">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <!-- Yayınlar Yönetimi Butonu -->
+        <button class="pill-btn" id="openSettings" aria-label="Takip edilen yayınlar" title="Haber Kaynaklarını Yönet">
+          <span>Yayınlar</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <!-- Light / Dark Mode Toggle Butonu -->
+        <button class="icon-btn theme-toggle-btn" id="themeToggleBtn" aria-label="Görünüm Modunu Değiştir" title="Karanlık / Aydınlık Mod">
+          <!-- Ay simgesi (Light moddayken görünür) -->
+          <svg class="theme-icon moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <!-- Güneş simgesi (Dark moddayken görünür) -->
+          <svg class="theme-icon sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-container">
+    
+    <!-- Hero Bölümü -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="eyebrow-wrap">
+          <span class="eyebrow-text">KÜRATÖRLÜ GÜNLÜK AKIŞ</span>
+          <span class="eyebrow-line"></span>
+        </div>
+
+        <h1 class="hero-title">
+          Dünyada<br>
+          neler<br>
+          <em class="hero-accent">oluyor?</em>
+        </h1>
+
+        <p class="hero-intro">
+          Dünyanın önde gelen yayınlarından siyaset, politika ve ekonomi haberleri — tek, sade bir gündelik akışta.
+        </p>
+
+        <div class="hero-actions">
+          <button class="hero-play-btn" id="highlightsBtn">
+            <span class="play-icon">▶</span>
+            <span>Günün Öne Çıkanları</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Yeni Özel Tasarım Dünya Görseli -->
+      <div class="hero-visual" aria-hidden="true">
+        <img src="hero-globe.jpg" alt="Dünya Gezegeni" class="globe-img">
+        <div class="globe-fade-overlay"></div>
+      </div>
+    </section>
+
+    <!-- Kategori Sekmeleri -->
+    <nav class="tabs-nav" id="tabs" aria-label="Haber kategorileri">
+      <!-- JavaScript ile sekmeler buraya yerleştirilecek -->
+    </nav>
+
+    <!-- Durum ve Güncelleme Şeridi -->
+    <section class="feed-status-bar">
+      <div class="status-left">
+        <span class="pulse-dot"></span>
+        <span id="feedStatusText">Son güncelleme: şimdi · 30 haber</span>
+      </div>
+      <div class="status-right">
+        <button class="all-news-link" id="refreshBtn">
+          <span>Tüm Haberler</span>
+          <span class="arrow">➔</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Haber Kartları Izgarası (3 Sütun) -->
+    <section class="stories-grid" id="stories" aria-live="polite">
+      <!-- Kartlar dinamik olarak buraya basılır -->
+    </section>
+
+    <!-- Alt Bölüm: Ekolayzır Dalga Formu Simgesi -->
+    <footer class="site-footer">
+      <div class="equalizer-divider">
+        <span class="divider-line"></span>
+        <div class="equalizer-icon" aria-label="Gündem 360 Dalga Formu">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+          <span class="bar bar-3"></span>
+          <span class="bar bar-4"></span>
+          <span class="bar bar-5"></span>
+        </div>
+        <span class="divider-line"></span>
+      </div>
+      <div class="footer-meta">
+        <span class="footer-brand">GÜNDEM 360°</span>
+        <span class="footer-dot">·</span>
+        <span>Her gün tazelenen küresel ve yerel panorama</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Yayınlar Tercih Modalı (Seçme / Çıkarma / İlave Etme) -->
+  <dialog class="modal-dialog" id="preferences">
+    <div class="modal-card">
+      <button class="modal-close" id="closePrefs" aria-label="Kapat">×</button>
+      <p class="modal-eyebrow">SEÇİLİ YAYINLAR</p>
+      <h2 class="modal-title">Haber Kaynakları</h2>
+      <p class="modal-desc">
+        Haber akışınızda görmek istediğiniz yayınları seçebilir, istemediklerinizi çıkarabilir veya yeni RSS kaynağı ekleyebilirsiniz.
+      </p>
+
+      <!-- Yeni Kaynak İlave Etme Kutusu -->
+      <div class="add-source-section">
+        <p class="add-section-label">+ YENİ KAYNAK İLAVE ET</p>
+        <div class="add-source-form">
+          <input type="text" id="newSourceName" placeholder="Yayın Adı (Örn: Bloomberg, Politico, Sözcü)" class="source-input name-input">
+          <input type="url" id="newSourceUrl" placeholder="RSS Bağlantısı (https://...)" class="source-input url-input">
+          <button id="addSourceBtn" class="add-source-btn">+ Ekle</button>
+        </div>
+        <p class="input-tip">Hızlı ekle: <span class="quick-preset" data-name="Bloomberg" data-url="https://feeds.bloomberg.com/markets/news.rss">+ Bloomberg</span> · <span class="quick-preset" data-name="Politico" data-url="https://rss.politico.com/politics-news.xml">+ Politico</span> · <span class="quick-preset" data-name="The Verge" data-url="https://www.theverge.com/rss/index.xml">+ The Verge</span></p>
+      </div>
+
+      <!-- Kullanıcının Eklediği Özel Kaynaklar -->
+      <div class="sources-group" id="customGroup" style="display: none;">
+        <div class="group-header">
+          <p class="group-title">ÖZEL İLAVE ETTİĞİNİZ YAYINLAR</p>
+          <span class="group-subtext">✕ ile kalıcı silebilirsiniz</span>
+        </div>
+        <div class="tags-container" id="customSourceTags"></div>
+      </div>
+
+      <!-- Uluslararası Yayınlar -->
+      <div class="sources-group">
+        <div class="group-header">
+          <p class="group-title">ULUSLARARASI YAYINLAR</p>
+          <span class="group-subtext">Tıklayarak seçin / çıkarın</span>
+        </div>
+        <div class="tags-container" id="intlSourceTags"></div>
+      </div>
+
+      <!-- Türkiye & Spor Yayınları -->
+      <div class="sources-group">
+        <div class="group-header">
+          <p class="group-title">TÜRKİYE & SPOR YAYINLARI</p>
+          <span class="group-subtext">Tıklayarak seçin / çıkarın</span>
+        </div>
+        <div class="tags-container" id="trSportsSourceTags"></div>
+      </div>
+
+      <!-- UK & İskoçya Yerel Kaynakları -->
+      <div class="sources-group">
+        <div class="group-header">
+          <p class="group-title">UK & İSKOÇYA YEREL KAYNAKLARI</p>
+          <span class="group-subtext">Tıklayarak seçin / çıkarın</span>
+        </div>
+        <div class="tags-container" id="localSourceTags"></div>
+      </div>
+
+      <div class="modal-footer-actions">
+        <button class="reset-sources-btn" id="resetSourcesBtn">Varsayılana Sıfırla</button>
+        <button class="modal-save-btn" id="savePrefs">Tamam</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Kart Şablonu -->
+  <template id="cardTmpl">
+    <article class="news-card">
+      <div class="card-media">
+        <img class="card-image" src="" alt="" loading="lazy">
+      </div>
+      
+      <div class="card-body">
+        <div class="card-meta">
+          <div class="meta-left">
+            <span class="category-tag"></span>
+            <span class="meta-sep">|</span>
+            <span class="source-tag"></span>
+          </div>
+          <div class="meta-right">
+            <span class="time-tag"></span>
+            <button class="bookmark-btn" aria-label="Kaydet" title="Haberi Kaydet">
+              <svg width="13" height="15" viewBox="0 0 13 15" fill="none">
+                <path d="M1.5 1.5H11.5V13.5L6.5 9.75L1.5 13.5V1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <h3 class="card-headline">
+          <a class="headline-link" target="_blank" rel="noopener"></a>
+        </h3>
+
+        <p class="card-summary"></p>
+
+        <div class="card-footer">
+          <a class="read-more-link" target="_blank" rel="noopener">
+            <span>Habere git</span>
+            <span class="link-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

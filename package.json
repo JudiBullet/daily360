@@ -1,0 +1,21 @@
+{
+  "name": "gundem360",
+  "version": "1.0.0",
+  "description": "Gündem 360° — Günlük Küratörlü Dünya Haberleri",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "news",
+    "rss",
+    "turkey",
+    "world-news",
+    "curated"
+  ],
+  "author": "",
+  "license": "MIT"
+}
