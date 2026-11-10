@@ -303,10 +303,11 @@ body {
    ========================================================== */
 .hero-section {
   position: relative;
+  isolation: isolate;
   min-height: 380px;
   display: flex;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   padding: 20px 0 10px;
 }
 
@@ -392,16 +393,16 @@ body {
 /* Hero Görseli: Temiz 3D Dünya Küresi */
 .hero-visual {
   position: absolute;
-  top: -15px;
-  right: -20px;
+  inset: 0 0 0 auto;
   width: 58%;
-  height: 115%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
 }
 
 .globe-img {
@@ -415,15 +416,9 @@ body {
 .globe-fade-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, var(--bg-page) 0%, rgba(244, 243, 236, 0.4) 30%, transparent 65%),
-              linear-gradient(to bottom, transparent 80%, var(--bg-page) 100%);
+  background: linear-gradient(to right, var(--bg-page) 0%, color-mix(in srgb, var(--bg-page) 45%, transparent) 30%, transparent 65%);
   pointer-events: none;
-  transition: background 0.3s;
-}
-
-[data-theme="dark"] .globe-fade-overlay {
-  background: linear-gradient(to right, var(--bg-page) 0%, rgba(13, 18, 15, 0.6) 30%, transparent 70%),
-              linear-gradient(to bottom, transparent 75%, var(--bg-page) 100%);
+  transition: background 0.3s ease;
 }
 
 /* ==========================================================
@@ -1197,6 +1192,7 @@ body {
     padding: 16px 14px 36px;
   }
   .hero-section {
+    flex-direction: column;
     min-height: auto;
     padding: 12px 0 20px;
     margin-bottom: 18px;
@@ -1209,6 +1205,8 @@ body {
     position: relative;
     width: 100%;
     height: clamp(150px, 48vw, 210px);
+    inset: auto;
+    flex: none;
     margin-top: -8px;
     margin-bottom: 12px;
   }
