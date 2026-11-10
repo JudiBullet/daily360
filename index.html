@@ -26,15 +26,14 @@
           <button class="weather-trigger" id="weatherTrigger" type="button" aria-expanded="false" aria-controls="weatherForecast">
             <span class="weather-icon" id="weatherIcon" aria-hidden="true">☁</span>
             <span class="weather-temp" id="weatherTemp">--°</span>
-            <span class="weather-city" id="weatherCity">Edinburgh</span>
+            <span class="weather-city" id="weatherCity">Edinburgh · İstanbul</span>
           </button>
-          <section class="weather-popover" id="weatherForecast" aria-label="5 günlük hava tahmini" hidden>
-            <div class="weather-popover-heading"><strong id="weatherHeading">Edinburgh</strong><span>5 günlük tahmin</span></div>
-            <div class="weather-city-tabs" role="group" aria-label="Şehir seçimi">
-              <button class="weather-city-tab active" type="button" data-weather-city="Edinburgh">Edinburgh</button>
-              <button class="weather-city-tab" type="button" data-weather-city="Istanbul">İstanbul</button>
+          <section class="weather-popover" id="weatherForecast" aria-label="Edinburgh ve İstanbul 5 günlük hava tahmini" hidden>
+            <div class="weather-popover-heading"><strong>5 günlük hava durumu</strong><span>°C</span></div>
+            <div class="weather-city-columns">
+              <div class="weather-city-column"><h3>Edinburgh</h3><div class="weather-days" id="weatherDaysEdinburgh"><span class="weather-loading">Yükleniyor…</span></div></div>
+              <div class="weather-city-column"><h3>İstanbul</h3><div class="weather-days" id="weatherDaysIstanbul"><span class="weather-loading">Yükleniyor…</span></div></div>
             </div>
-            <div class="weather-days" id="weatherDays"><span class="weather-loading">Hava durumu yükleniyor…</span></div>
             <div class="weather-credit">Veri: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a></div>
           </section>
         </div>

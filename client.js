@@ -81,7 +81,6 @@ function setupWeather() {
   const mobileLayout = window.matchMedia('(max-width: 640px)');
   const trigger = $('#weatherTrigger');
   const popover = $('#weatherForecast');
-  let currentPlace = 'Edinburgh';
   let forecastLoaded = false;
   let weatherRequest = 0;
   let closeTimer = null;
@@ -98,27 +97,35 @@ function setupWeather() {
     trigger.setAttribute('aria-expanded', String(open));
   };
   const showPlace = async () => {
-    const place = currentPlace;
     const request = ++weatherRequest;
-    $('#weatherCity').textContent = place;
-    $('#weatherHeading').textContent = place;
     forecastLoaded = false;
-    $('#weatherTemp').textContent = '--°';
-    $('#weatherDays').innerHTML = '<span class="weather-loading">Güvenilir hava tahmini yükleniyor…</span>';
+    $('#weatherDaysEdinburgh').innerHTML = '<span class="weather-loading">Yükleniyor…</span>';
+    $('#weatherDaysIstanbul').innerHTML = '<span class="weather-loading">Yükleniyor…</span>';
     if (popover.hidden) return;
     try {
-      const response = await fetch(`/api/weather?city=${encodeURIComponent(place)}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Tahmin alınamadı');
-      if (request !== weatherRequest || place !== currentPlace) return;
-      $('#weatherTemp').textContent = `${Math.round(data.current.temperature)}°`;
-      $('#weatherIcon').textContent = data.current.icon || '☁';
-      $('#weatherDays').innerHTML = data.days.map(day => `
-        <div class="weather-day"><span>${day.day}</span><span class="weather-day-icon" aria-hidden="true">${day.icon}</span><strong>${Math.round(day.max)}° <i>${Math.round(day.min)}°</i></strong></div>
-      `).join('');
+      const cities = ['Edinburgh', 'Istanbul'];
+      const results = await Promise.all(cities.map(async city => {
+        const response = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Tahmin alınamadı');
+        return [city, data];
+      }));
+      if (request !== weatherRequest) return;
+      for (const [city, data] of results) {
+        const id = city === 'Edinburgh' ? 'weatherDaysEdinburgh' : 'weatherDaysIstanbul';
+        const days = $(`#${id}`);
+        days.innerHTML = data.days.map(day => `
+          <div class="weather-day"><span>${day.day}</span><span class="weather-day-icon" aria-hidden="true">${day.icon}</span><strong>${Math.round(day.max)}° <i>${Math.round(day.min)}°</i></strong></div>
+        `).join('');
+      }
+      $('#weatherTemp').textContent = `${Math.round(results[0][1].current.temperature)}° · ${Math.round(results[1][1].current.temperature)}°`;
+      $('#weatherIcon').textContent = results[0][1].current.icon || '☁';
       forecastLoaded = true;
     } catch {
-      if (request === weatherRequest) $('#weatherDays').innerHTML = '<span class="weather-loading">Tahmin şu an alınamadı.</span>';
+      if (request === weatherRequest) {
+        $('#weatherDaysEdinburgh').innerHTML = '<span class="weather-loading">Tahmin alınamadı.</span>';
+        $('#weatherDaysIstanbul').innerHTML = '<span class="weather-loading">Tahmin alınamadı.</span>';
+      }
     }
   };
   const closeAfterPointerLeaves = () => {
@@ -146,16 +153,7 @@ function setupWeather() {
   document.addEventListener('click', event => {
     if (!widget.contains(event.target)) setOpen(false);
   });
-  popover.addEventListener('click', event => {
-    const button = event.target.closest('[data-weather-city]');
-    if (!button) return;
-    setOpen(true);
-    if (button.dataset.weatherCity === currentPlace) return;
-    currentPlace = button.dataset.weatherCity;
-    popover.querySelectorAll('[data-weather-city]').forEach(item => item.classList.toggle('active', item === button));
-    showPlace();
-  });
-  trigger.title = 'Üzerine gelin veya dokunun: 5 günlük hava tahmini';
+  trigger.title = 'Edinburgh ve İstanbul için 5 günlük hava tahmini';
 }
 
 function setupTabs() {
