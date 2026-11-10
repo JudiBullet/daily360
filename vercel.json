@@ -1,3 +1,14 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "style.css", "use": "@vercel/static" },
+    { "src": "client.js", "use": "@vercel/static" },
+    { "src": "hero-globe.jpg", "use": "@vercel/static" },
+    { "src": "api/news.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/news", "dest": "/api/news.js" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
 }
