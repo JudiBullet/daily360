@@ -19,15 +19,15 @@ const categories = {
   all: 'Manşetler',
   world: 'Dünya',
   turkey: 'Türkiye',
+  uk: 'UK',
+  scotland: 'Scotland',
   politics: 'Siyaset',
   policy: 'Politika',
   economy: 'Ekonomi',
   sports: 'Spor',
   health: 'Sağlık',
   technology: 'Teknoloji',
-  culture: 'Kültür & Sanat',
-  uk: 'UK Yerel',
-  scotland: 'Scotland'
+  culture: 'Kültür & Sanat'
 };
 
 let activeCategory = 'all';

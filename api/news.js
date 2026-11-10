@@ -67,6 +67,36 @@ async function fetchArticleDetails(link, fallbackDesc) {
   }
 }
 
+// Publisher-specific image lookup for feeds that omit a usable article photo.
+// Keep this limited to Reuters and The Washington Post so other publishers keep
+// their existing image handling.
+async function fetchPublisherImage(item) {
+  try {
+    const res = await fetch(item.link, {
+      signal: AbortSignal.timeout(5000),
+      headers: {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
+        'accept': 'text/html,application/xhtml+xml'
+      }
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const candidates = [
+      /<meta[^>]+(?:property=["']og:image["']|name=["']twitter:image["'])[^>]+content=["']([^"']+)["']/i,
+      /<meta[^>]+content=["']([^"']+)["'][^>]+(?:property=["']og:image["']|name=["']twitter:image["'])/i,
+      /<meta[^>]+name=["']parsely-image-url["'][^>]+content=["']([^"']+)["']/i,
+      /<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["']/i
+    ];
+    for (const pattern of candidates) {
+      const match = html.match(pattern);
+      if (match?.[1]) return new URL(match[1].replace(/&amp;/g, '&'), item.link).href;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 async function translateToTurkish(text) {
   if (!text) return '';
   if (/[çğıöşüÇĞİÖŞÜ]/.test(text) && /\b(ve|ile|bir|bu|için|olan|olarak|göre|sonra|haftanın|maçı|lig)\b/i.test(text)) {
@@ -225,7 +255,10 @@ module.exports = async (req, res) => {
 
   const enriched = await Promise.all(rawItems.slice(0, 36).map(async item => {
     const details = await fetchArticleDetails(item.link, item.description);
-    return { ...item, imageUrl: details.imageUrl || item.imageUrl, description: details.description || item.description };
+    let imageUrl = details.imageUrl || item.imageUrl;
+    if (item.source === 'Reuters') imageUrl = item.imageUrl || details.imageUrl;
+    if (item.source === 'The Washington Post') imageUrl = await fetchPublisherImage(item) || imageUrl;
+    return { ...item, imageUrl, description: details.description || item.description };
   }));
 
   let withImages = enriched;
