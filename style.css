@@ -417,11 +417,11 @@ body {
 .network-img {
   position: relative;
   z-index: 1;
-  width: min(68%, 390px);
+  width: min(48%, 270px);
   height: auto;
   aspect-ratio: 1;
   object-fit: contain;
-  padding: 28px;
+  padding: 20px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #61b5ff 0%, #2588df 48%, #1266b8 100%);
   box-shadow: 0 26px 80px rgba(22, 119, 210, 0.25), inset 0 1px 0 rgba(255,255,255,.28);
@@ -1178,8 +1178,8 @@ body {
     opacity: 1;
   }
   .network-img {
-    width: min(78%, 300px);
-    padding: 22px;
+    width: min(62%, 220px);
+    padding: 16px;
   }
 }
 
@@ -1247,15 +1247,15 @@ body {
   .hero-visual {
     position: relative;
     width: 100%;
-    height: clamp(128px, 38vw, 170px);
+    height: clamp(104px, 30vw, 136px);
     inset: auto;
     flex: none;
     margin-top: 0;
     margin-bottom: 4px;
   }
   .network-img {
-    width: min(34vw, 138px);
-    padding: 10px;
+    width: min(27vw, 108px);
+    padding: 8px;
   }
   .hero-content {
     max-width: 100%;
