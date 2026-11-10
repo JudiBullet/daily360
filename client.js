@@ -56,14 +56,20 @@ function relativeTime(pubDate) {
 }
 
 function setupDate() {
-  const now = new Date();
-  const formatted = new Intl.DateTimeFormat('tr-TR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    weekday: 'long'
-  }).format(now);
-  $('#today').textContent = formatted.toUpperCase();
+  const dateEl = $('#today');
+  const clockEl = $('#clock');
+  const updateClock = () => {
+    const now = new Date();
+    const formatted = new Intl.DateTimeFormat('tr-TR', {
+      day: 'numeric', month: 'long', year: 'numeric', weekday: 'long'
+    }).format(now);
+    dateEl.firstChild.textContent = `${formatted.toUpperCase()} `;
+    clockEl.textContent = new Intl.DateTimeFormat('tr-TR', {
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    }).format(now);
+  };
+  updateClock();
+  window.setInterval(updateClock, 30_000);
 }
 
 function setupTabs() {
