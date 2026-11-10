@@ -18,9 +18,9 @@
   --ink-secondary: #58615a;
   --ink-muted: #858d87;
   
-  --accent-green: #7ea815;
-  --accent-green-hover: #6e9411;
-  --accent-green-light: rgba(126, 168, 21, 0.12);
+  --accent-green: #1677d2;
+  --accent-green-hover: #0f64b4;
+  --accent-green-light: rgba(22, 119, 210, 0.12);
   
   --border-subtle: #e5e2d7;
   --border-card: #e7e5dc;
@@ -55,9 +55,9 @@
   --ink-secondary: #a2aba5;
   --ink-muted: #6e7971;
   
-  --accent-green: #89c41d;
-  --accent-green-hover: #9cd827;
-  --accent-green-light: rgba(137, 196, 29, 0.15);
+  --accent-green: #55aaff;
+  --accent-green-hover: #80bdff;
+  --accent-green-light: rgba(85, 170, 255, 0.17);
   
   --border-subtle: #232c26;
   --border-card: #253029;
@@ -399,7 +399,7 @@ body {
   color: var(--bg-page);
 }
 
-/* Hero görseli: tema uyumlu illüstratif dünya haritası */
+/* Hero görseli: marka işareti ve adaptif mavi daire */
 .hero-visual {
   position: absolute;
   inset: 0 0 0 auto;
@@ -408,26 +408,28 @@ body {
   z-index: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+  justify-content: center;
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 .network-img {
-  width: 100%;
-  height: 100%;
+  position: relative;
+  z-index: 1;
+  width: min(68%, 390px);
+  height: auto;
+  aspect-ratio: 1;
   object-fit: contain;
-  object-position: right center;
-  filter: drop-shadow(0 15px 35px rgba(126, 168, 21, 0.12));
+  padding: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #61b5ff 0%, #2588df 48%, #1266b8 100%);
+  box-shadow: 0 26px 80px rgba(22, 119, 210, 0.25), inset 0 1px 0 rgba(255,255,255,.28);
+  filter: none;
 }
 
 .globe-fade-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, var(--bg-page) 0%, color-mix(in srgb, var(--bg-page) 45%, transparent) 30%, transparent 65%);
-  pointer-events: none;
-  transition: background 0.3s ease;
+  display: none;
 }
 
 /* ==========================================================
@@ -1173,7 +1175,11 @@ body {
   }
   .hero-visual {
     width: 50%;
-    opacity: 0.65;
+    opacity: 1;
+  }
+  .network-img {
+    width: min(78%, 300px);
+    padding: 22px;
   }
 }
 
@@ -1243,6 +1249,10 @@ body {
     flex: none;
     margin-top: -8px;
     margin-bottom: 12px;
+  }
+  .network-img {
+    width: min(48vw, 190px);
+    padding: 14px;
   }
   .hero-content {
     max-width: 100%;
