@@ -6,6 +6,7 @@
     { "src": "client.js", "use": "@vercel/static" },
     { "src": "hero-globe.jpg", "use": "@vercel/static" },
     { "src": "favicon.svg", "use": "@vercel/static" },
+    { "src": "logo.svg", "use": "@vercel/static" },
     { "src": "api/news.js", "use": "@vercel/node" },
     { "src": "api/image.js", "use": "@vercel/node" },
     { "src": "api/weather.js", "use": "@vercel/node" }

@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="15" fill="#ffd629"/>
-  <text x="32" y="48" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="800" letter-spacing="-4" fill="#111111">d</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="172 78 684 842">
+  <path fill="#000" d="M564 146 757 100 835 177V873L636 881 594 836C555 877 500 897 434 897 293 897 190 781 190 552c0-179 115-306 274-306 37 0 71 6 100 20V146Z"/>
+  <path fill="#fff" d="m598 171 137-33-3 639-130 9-8-60c-40 49-94 71-154 71-126 0-217-100-217-246 0-157 98-272 243-272 54 0 99 19 131 51l1-159Z"/>
+  <path fill="#000" d="M346 547c36-77 84-126 141-126 54 0 95 41 126 106-34 68-80 125-141 125-52 0-96-41-126-105Z"/>
+  <ellipse cx="479" cy="537" fill="#fff" rx="40" ry="55" transform="rotate(13 479 537)"/>
 </svg>

@@ -124,7 +124,15 @@ body {
   font-weight: 800;
   letter-spacing: -0.02em;
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
+  gap: 5px;
+}
+
+.brand-mark {
+  display: block;
+  width: 26px;
+  height: 32px;
+  flex: 0 0 auto;
 }
 
 .brand-name {
@@ -828,6 +836,15 @@ body {
   font-weight: 800;
   letter-spacing: 0.08em;
   color: var(--ink-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.footer-mark {
+  display: block;
+  width: 15px;
+  height: 18px;
 }
 
 .footer-dot {
@@ -1169,6 +1186,7 @@ body {
   .header-inner { gap: 8px; }
   .header-left { gap: 8px; min-width: 0; }
   .brand { font-size: 21px; flex-shrink: 0; }
+  .brand-mark { width: 22px; height: 27px; }
   .header-date {
     display: block;
     min-width: 0;
@@ -1237,6 +1255,7 @@ body {
   .header-date > :first-child { overflow: hidden; text-overflow: ellipsis; }
   .header-pipe { display: none; }
   .brand { font-size: 19px; }
+  .brand-mark { width: 20px; height: 25px; }
   .header-right { gap: 0; }
   .header-right .icon-btn { width: 30px; }
   .header-right .pill-btn { padding: 7px; }
