@@ -399,39 +399,6 @@ body {
   color: var(--bg-page);
 }
 
-/* Hero görseli: marka işareti ve adaptif mavi daire */
-.hero-visual {
-  position: absolute;
-  inset: 0 0 0 auto;
-  width: 58%;
-  pointer-events: none;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
-  -webkit-mask-image: none;
-  mask-image: none;
-}
-
-.network-img {
-  position: relative;
-  z-index: 1;
-  width: min(48%, 270px);
-  height: auto;
-  aspect-ratio: 1;
-  object-fit: contain;
-  padding: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #61b5ff 0%, #2588df 48%, #1266b8 100%);
-  box-shadow: 0 26px 80px rgba(22, 119, 210, 0.25), inset 0 1px 0 rgba(255,255,255,.28);
-  filter: none;
-}
-
-.globe-fade-overlay {
-  display: none;
-}
-
 /* ==========================================================
    KATEGORİ SEKMELERİ
    ========================================================== */
@@ -1173,14 +1140,6 @@ body {
   .hero-title {
     font-size: 52px;
   }
-  .hero-visual {
-    width: 50%;
-    opacity: 1;
-  }
-  .network-img {
-    width: min(62%, 220px);
-    padding: 16px;
-  }
 }
 
 @media (max-width: 640px) {
@@ -1243,19 +1202,6 @@ body {
   .hero-title {
     font-size: clamp(38px, 11vw, 46px);
     margin-bottom: 14px;
-  }
-  .hero-visual {
-    position: relative;
-    width: 100%;
-    height: clamp(104px, 30vw, 136px);
-    inset: auto;
-    flex: none;
-    margin-top: 0;
-    margin-bottom: 4px;
-  }
-  .network-img {
-    width: min(27vw, 108px);
-    padding: 8px;
   }
   .hero-content {
     max-width: 100%;
