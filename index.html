@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700;1,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=mobile-layout-20261110">
+  <link rel="stylesheet" href="style.css?v=breaking-slider-20261110">
 </head>
 <body>
 
@@ -106,7 +106,17 @@
           </button>
         </div>
       </div>
-
+      <aside class="breaking-slider" id="breakingSlider" aria-label="Son dakika haberleri">
+        <div class="breaking-slider-top"><span class="breaking-live-dot"></span><span>SON DAKİKA</span><span class="breaking-slide-count" id="breakingSlideCount">-- / 04</span></div>
+        <div class="breaking-slide" id="breakingSlide" aria-live="polite"><span class="breaking-slide-loading">Son dakika haberleri yükleniyor…</span></div>
+        <div class="breaking-slider-bottom">
+          <div class="breaking-slider-dots" id="breakingSliderDots" aria-label="Haber seçimi"></div>
+          <div class="breaking-slider-controls">
+            <button type="button" id="breakingPrev" aria-label="Önceki son dakika haberi">‹</button>
+            <button type="button" id="breakingNext" aria-label="Sonraki son dakika haberi">›</button>
+          </div>
+        </div>
+      </aside>
     </section>
 
     <!-- Kategori Sekmeleri -->

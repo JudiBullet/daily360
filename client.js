@@ -156,6 +156,102 @@ function setupWeather() {
   trigger.title = 'Edinburgh ve İstanbul için 5 günlük hava tahmini';
 }
 
+function setupBreakingSlider() {
+  const slider = $('#breakingSlider');
+  const slide = $('#breakingSlide');
+  const dots = $('#breakingSliderDots');
+  const count = $('#breakingSlideCount');
+  let items = [];
+  let index = 0;
+  let rotationTimer = null;
+  let refreshTimer = null;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const stopRotation = () => {
+    window.clearInterval(rotationTimer);
+    rotationTimer = null;
+  };
+  const startRotation = () => {
+    stopRotation();
+    if (reducedMotion || items.length < 2 || document.hidden) return;
+    rotationTimer = window.setInterval(() => show(index + 1), 6500);
+  };
+  const show = nextIndex => {
+    if (!items.length) return;
+    index = (nextIndex + items.length) % items.length;
+    const item = items[index];
+    const link = document.createElement('a');
+    link.className = 'breaking-slide-link';
+    link.href = item.link;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+
+    const title = document.createElement('strong');
+    title.className = 'breaking-slide-title';
+    title.textContent = item.title;
+    const meta = document.createElement('span');
+    meta.className = 'breaking-slide-meta';
+    meta.textContent = `${item.source || 'Dünya basını'} · ${relativeTime(item.pubDate)}`;
+    link.append(title, meta);
+    slide.replaceChildren(link);
+    count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
+    dots.querySelectorAll('button').forEach((dot, dotIndex) => {
+      dot.classList.toggle('active', dotIndex === index);
+      dot.setAttribute('aria-current', dotIndex === index ? 'true' : 'false');
+    });
+  };
+  const setItems = latestItems => {
+    const currentLink = items[index]?.link;
+    items = latestItems.slice(0, 4);
+    if (!items.length) {
+      slide.textContent = 'Şu an gösterilecek son dakika haberi yok.';
+      count.textContent = '00 / 00';
+      dots.replaceChildren();
+      stopRotation();
+      return;
+    }
+    const preservedIndex = items.findIndex(item => item.link === currentLink);
+    index = preservedIndex >= 0 ? preservedIndex : 0;
+    dots.replaceChildren(...items.map((item, dotIndex) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Son dakika haberi ${dotIndex + 1}: ${item.title}`);
+      dot.addEventListener('click', () => { show(dotIndex); startRotation(); });
+      return dot;
+    }));
+    show(index);
+    startRotation();
+  };
+  const load = async () => {
+    const allKnown = [...intlSources, ...trSportsSources, ...localSources, ...customSources.map(source => source.name)];
+    const activeList = allKnown.filter(source => !disabledSources.has(source));
+    const params = new URLSearchParams({ category: 'breaking', sources: activeList.join(',') });
+    if (customSources.length) params.set('customFeeds', JSON.stringify(customSources));
+    try {
+      const response = await fetch(`/api/news?${params}`);
+      if (!response.ok) throw new Error('Breaking news unavailable');
+      const data = await response.json();
+      const latest = (data.items || [])
+        .filter(item => item.title && item.link && !disabledSources.has(item.source))
+        .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+      setItems(latest);
+    } catch {
+      if (!items.length) slide.textContent = 'Son dakika haberleri şu an alınamıyor.';
+    }
+  };
+
+  $('#breakingPrev').addEventListener('click', () => { show(index - 1); startRotation(); });
+  $('#breakingNext').addEventListener('click', () => { show(index + 1); startRotation(); });
+  slider.addEventListener('mouseenter', stopRotation);
+  slider.addEventListener('mouseleave', startRotation);
+  slider.addEventListener('focusin', stopRotation);
+  slider.addEventListener('focusout', event => { if (!slider.contains(event.relatedTarget)) startRotation(); });
+  document.addEventListener('visibilitychange', () => document.hidden ? stopRotation() : startRotation());
+  load();
+  refreshTimer = window.setInterval(load, 60_000);
+  window.addEventListener('pagehide', () => { stopRotation(); window.clearInterval(refreshTimer); }, { once: true });
+}
+
 function setupTabs() {
   const tabsContainer = $('#tabs');
   tabsContainer.innerHTML = Object.entries(categories).map(([key, name]) => {
@@ -519,6 +615,7 @@ function setupTheme() {
 setupTheme();
 setupDate();
 setupWeather();
+setupBreakingSlider();
 setupTabs();
 setupModal();
 setupActions();
