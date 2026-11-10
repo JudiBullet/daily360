@@ -1143,24 +1143,42 @@ body {
 }
 
 @media (max-width: 640px) {
+  .header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+    row-gap: 4px;
+  }
+  .header-left { display: contents; }
+  .brand { grid-column: 1; grid-row: 1; width: max-content; }
+  .header-date {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    max-width: none;
+    overflow: visible;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+  .header-date > :first-child { overflow: visible; text-overflow: clip; }
+  .header-right { grid-column: 2; grid-row: 1; gap: 5px; }
+  .header-pipe { display: none; }
+  .header-right .pill-btn span { display: inline; }
+  .header-right .pill-btn { padding: 7px 9px; }
+  .hero-section .hero-visual,
+  .hero-section .network-img { display: none !important; }
   .stories-grid {
     grid-template-columns: 1fr;
   }
   .site-header {
     padding: 10px 14px;
   }
-  .header-inner { gap: 8px; }
   .header-left { gap: 8px; min-width: 0; }
   .brand { font-size: 21px; flex-shrink: 0; }
   .brand-mark { width: 22px; height: 27px; }
-  .header-date {
-    display: block;
-    min-width: 0;
-    font-size: 8px;
-    line-height: 1.35;
-    letter-spacing: 0.035em;
-    white-space: nowrap;
-  }
+  .header-date { min-width: 0; line-height: 1.35; white-space: nowrap; }
   .weather-trigger { gap: 4px; padding: 5px 7px; font-size: 10px; }
   .weather-city { display: none; }
   .mobile-weather-slot {
@@ -1170,7 +1188,7 @@ body {
     padding: 0 0 14px;
   }
   .mobile-weather-slot { justify-content: flex-start; }
-  .mobile-weather-slot .weather-city { display: none; }
+  .mobile-weather-slot .weather-city { display: inline; }
   .mobile-weather-slot .weather-trigger { padding: 7px 10px; font-size: 11px; }
   .mobile-weather-slot .weather-popover {
     position: fixed;
@@ -1209,8 +1227,9 @@ body {
   .hero-intro { font-size: 14px; margin-bottom: 18px; }
   .tabs-nav { gap: 6px; padding: 8px 0 12px; margin-right: -14px; padding-right: 14px; }
   .tab-btn { font-size: 12px; padding: 7px 13px; }
-  .feed-status-bar { align-items: center; gap: 8px; }
+  .feed-status-bar { align-items: center; flex-wrap: wrap; gap: 8px; padding: 11px 12px; }
   .status-left { min-width: 0; font-size: 11px; }
+  .status-right { margin-left: auto; }
   .all-news-link { font-size: 11px; white-space: nowrap; }
   .story-card { min-width: 0; }
   .footer-meta { flex-wrap: wrap; text-align: center; gap: 7px; }
@@ -1226,13 +1245,10 @@ body {
 }
 
 @media (max-width: 380px) {
-  .header-date { max-width: 112px; overflow: hidden; }
-  .header-date > :first-child { overflow: hidden; text-overflow: ellipsis; }
-  .header-pipe { display: none; }
+  .header-date { max-width: none; overflow: visible; font-size: 9px; }
   .brand { font-size: 19px; }
   .brand-mark { width: 20px; height: 25px; }
   .header-right { gap: 0; }
   .header-right .icon-btn { width: 30px; }
-  .header-right .pill-btn { padding: 7px; }
-  .header-right .pill-btn span { display: none; }
+  .header-right .pill-btn { padding: 7px 8px; }
 }
