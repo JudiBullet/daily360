@@ -399,7 +399,7 @@ body {
   color: var(--bg-page);
 }
 
-/* Hero Görseli: Temiz 3D Dünya Küresi */
+/* Hero görseli: tema uyumlu illüstratif dünya haritası */
 .hero-visual {
   position: absolute;
   inset: 0 0 0 auto;
