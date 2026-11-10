@@ -76,12 +76,22 @@ function setupDate() {
 
 function setupWeather() {
   const widget = $('#weatherWidget');
+  const mobileSlot = $('#mobileWeatherSlot');
+  const headerHome = widget.parentElement;
+  const mobileLayout = window.matchMedia('(max-width: 640px)');
   const trigger = $('#weatherTrigger');
   const popover = $('#weatherForecast');
   let currentPlace = 'Edinburgh';
   let forecastLoaded = false;
   let weatherRequest = 0;
   let closeTimer = null;
+
+  const placeWidget = () => {
+    const destination = mobileLayout.matches ? mobileSlot : headerHome;
+    if (widget.parentElement !== destination) destination.appendChild(widget);
+  };
+  placeWidget();
+  mobileLayout.addEventListener('change', placeWidget);
 
   const setOpen = open => {
     popover.hidden = !open;

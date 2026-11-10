@@ -184,6 +184,7 @@ body {
 }
 
 .weather-widget { position: relative; z-index: 120; }
+.mobile-weather-slot { display: none; }
 .weather-trigger {
   display: inline-flex;
   align-items: center;
@@ -1197,7 +1198,22 @@ body {
   }
   .weather-trigger { gap: 4px; padding: 5px 7px; font-size: 10px; }
   .weather-city { display: none; }
-  .weather-popover { position: fixed; top: 60px; left: 50%; width: min(300px, calc(100vw - 24px)); transform: translateX(-50%); }
+  .mobile-weather-slot {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0 14px;
+  }
+  .mobile-weather-slot .weather-city { display: inline; }
+  .mobile-weather-slot .weather-trigger { padding: 7px 10px; font-size: 11px; }
+  .mobile-weather-slot .weather-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    left: auto;
+    width: min(300px, calc(100vw - 28px));
+    transform: none;
+  }
   .header-pipe {
     display: inline;
   }
