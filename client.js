@@ -16,6 +16,7 @@ const localSources = [
 ];
 
 const categories = {
+  breaking: 'Son Dakika',
   all: 'Manşetler',
   world: 'Dünya',
   turkey: 'Türkiye',
@@ -32,6 +33,7 @@ const categories = {
 
 let activeCategory = 'all';
 let allItems = [];
+let breakingRefreshTimer = null;
 let bookmarks = new Set(JSON.parse(localStorage.getItem('gundem360_bookmarks') || '[]'));
 
 // Kullanıcının kapattığı / çıkardığı kaynaklar
@@ -90,7 +92,7 @@ function setupWeather() {
     $('#weatherHeading').textContent = place;
     forecastLoaded = false;
     $('#weatherTemp').textContent = '--°';
-    $('#weatherDays').innerHTML = '<span class="weather-loading">AccuWeather tahmini yükleniyor…</span>';
+    $('#weatherDays').innerHTML = '<span class="weather-loading">Güvenilir hava tahmini yükleniyor…</span>';
     if (popover.hidden || loading) return;
     loading = true;
     try {
@@ -104,8 +106,8 @@ function setupWeather() {
         <div class="weather-day"><span>${day.day}</span><span class="weather-day-icon" aria-hidden="true">${day.icon}</span><strong>${Math.round(day.max)}° <i>${Math.round(day.min)}°</i></strong></div>
       `).join('');
       forecastLoaded = true;
-    } catch (error) {
-      $('#weatherDays').innerHTML = `<span class="weather-loading">${error.message === 'API_KEY_MISSING' ? 'AccuWeather API anahtarı Vercel’e eklenmeli.' : 'Tahmin şu an alınamadı.'}</span>`;
+    } catch {
+      $('#weatherDays').innerHTML = '<span class="weather-loading">Tahmin şu an alınamadı.</span>';
     } finally {
       loading = false;
     }
@@ -151,8 +153,18 @@ function setupTabs() {
     
     activeCategory = btn.dataset.cat;
     $$('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    syncBreakingRefresh();
     loadNews();
   });
+  syncBreakingRefresh();
+}
+
+function syncBreakingRefresh() {
+  window.clearInterval(breakingRefreshTimer);
+  breakingRefreshTimer = null;
+  if (activeCategory === 'breaking') {
+    breakingRefreshTimer = window.setInterval(() => loadNews({ silent: true }), 60_000);
+  }
 }
 
 // Kaynak Butonu (Pill) HTML Oluşturucu
@@ -324,12 +336,13 @@ function setupActions() {
   };
 }
 
-async function loadNews() {
+async function loadNews({ silent = false } = {}) {
+  const requestedCategory = activeCategory;
   const statusEl = $('#feedStatusText');
   const storiesGrid = $('#stories');
-  
-  statusEl.textContent = 'Günün haberleri kaynaklardan toplanıyor…';
-  storiesGrid.innerHTML = `
+
+  statusEl.textContent = requestedCategory === 'breaking' ? 'Son dakika akışı taranıyor…' : 'Günün haberleri kaynaklardan toplanıyor…';
+  if (!silent) storiesGrid.innerHTML = `
     <div style="grid-column: 1 / -1; padding: 60px 0; text-align: center; color: var(--ink-muted);">
       <div class="pulse-dot" style="width: 12px; height: 12px; margin-bottom: 12px;"></div>
       <p style="font-size: 14px; font-weight: 600;">Seçili yayınlardan haberler ve fotoğraflar yükleniyor…</p>
@@ -342,7 +355,7 @@ async function loadNews() {
     const activeList = allKnown.filter(s => !disabledSources.has(s));
 
     const params = new URLSearchParams({
-      category: activeCategory,
+      category: requestedCategory,
       sources: activeList.join(',')
     });
 
@@ -353,6 +366,7 @@ async function loadNews() {
     const res = await fetch(`/api/news?${params}`);
     if (!res.ok) throw new Error('API yanıt vermedi');
     const data = await res.json();
+    if (requestedCategory !== activeCategory) return;
     
     if (!data.items || !data.items.length) {
       storiesGrid.innerHTML = `
@@ -373,9 +387,18 @@ async function loadNews() {
       if (activeCategory === 'sports') return true;
       return !disabledSources.has(item.source);
     });
-    statusEl.textContent = `Son güncelleme: şimdi · ${allItems.length} haber`;
+    if (requestedCategory === 'breaking') {
+      const checkedAt = new Intl.DateTimeFormat('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).format(new Date(data.updatedAt || Date.now()));
+      statusEl.textContent = `● CANLI · Son tarama ${checkedAt} · ${allItems.length} haber · 60 saniyede bir yenilenir`;
+    } else {
+      statusEl.textContent = `Son güncelleme: şimdi · ${allItems.length} haber`;
+    }
     renderCards(allItems);
   } catch (err) {
+    if (silent && requestedCategory === 'breaking' && requestedCategory === activeCategory) {
+      statusEl.textContent = '● CANLI · Yenileme başarısız, tekrar denenecek';
+      return;
+    }
     statusEl.textContent = 'Haber akışına şu an ulaşılamadı';
     storiesGrid.innerHTML = `
       <div style="grid-column: 1 / -1; padding: 40px; background: #fff; border-radius: 14px; border: 1px solid var(--border-card); text-align: center;">

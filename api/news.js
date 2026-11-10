@@ -120,6 +120,14 @@ const sportsExclusiveFeeds = [
   ['Süper Lig', 'https://www.sabah.com.tr/rss/spor.xml']
 ];
 
+const breakingFeeds = [
+  ['BBC News', 'https://feeds.bbci.co.uk/news/world/rss.xml'],
+  ['Reuters', 'https://news.google.com/rss/search?q=site:reuters.com+when:1d&hl=en&gl=US&ceid=US:en'],
+  ['Al Jazeera', 'https://www.aljazeera.com/xml/rss/all.xml'],
+  ['BBC Türkçe', 'https://feeds.bbci.co.uk/turkce/rss.xml'],
+  ['TRT Haber', 'https://www.trthaber.com/gundem_articles.rss']
+];
+
 const categoryFeeds = {
   all: [
     ['BBC News', 'https://feeds.bbci.co.uk/news/rss.xml'],
@@ -216,11 +224,12 @@ async function fetchFeed(source, url) {
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
-
   const { category = 'all', sources, customFeeds: customParam } = req.query;
+  const isBreaking = category === 'breaking';
+  res.setHeader('Cache-Control', isBreaking ? 's-maxage=45, stale-while-revalidate=15' : 's-maxage=300, stale-while-revalidate=600');
+
   const isSports = category === 'sports';
-  const feedsToQuery = isSports ? sportsExclusiveFeeds : (categoryFeeds[category] || categoryFeeds.all);
+  const feedsToQuery = isSports ? sportsExclusiveFeeds : (isBreaking ? breakingFeeds : (categoryFeeds[category] || categoryFeeds.all));
 
   let activeFeeds = [...feedsToQuery];
   if (!isSports) {
@@ -251,9 +260,11 @@ module.exports = async (req, res) => {
       seen.add(id);
       return true;
     })
+    .filter(item => !isBreaking || (Date.now() - new Date(item.pubDate).getTime() < 24 * 60 * 60 * 1000))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-  const enriched = await Promise.all(rawItems.slice(0, 36).map(async item => {
+  const enriched = await Promise.all(rawItems.slice(0, isBreaking ? 24 : 36).map(async item => {
+    if (isBreaking) return item;
     const details = await fetchArticleDetails(item.link, item.description);
     let imageUrl = details.imageUrl || item.imageUrl;
     if (item.source === 'Reuters') imageUrl = item.imageUrl || details.imageUrl;
@@ -279,7 +290,7 @@ module.exports = async (req, res) => {
     withImages = blended;
   }
 
-  const finalItems = withImages.slice(0, 30);
+  const finalItems = withImages.slice(0, isBreaking ? 24 : 30);
   const translated = await Promise.all(finalItems.map(async item => ({
     ...item,
     title: await translateToTurkish(item.title),

@@ -471,6 +471,23 @@ body {
   transition: all 0.2s ease;
 }
 
+.tab-btn[data-cat="breaking"] { color: #c62828; }
+.tab-btn[data-cat="breaking"]::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 1px;
+  animation: breaking-pulse 1.5s ease-in-out infinite;
+}
+.tab-btn[data-cat="breaking"].active { background: #c62828; color: #fff; }
+@keyframes breaking-pulse {
+  50% { opacity: .35; }
+}
+
 .tab-btn:hover {
   background: var(--bg-pill);
   color: var(--ink-primary);
