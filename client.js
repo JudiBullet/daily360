@@ -72,6 +72,72 @@ function setupDate() {
   window.setInterval(updateClock, 30_000);
 }
 
+function setupWeather() {
+  const widget = $('#weatherWidget');
+  const trigger = $('#weatherTrigger');
+  const popover = $('#weatherForecast');
+  let currentPlace = 'Edinburgh';
+  let forecastLoaded = false;
+  let loading = false;
+
+  const setOpen = open => {
+    popover.hidden = !open;
+    trigger.setAttribute('aria-expanded', String(open));
+  };
+  const showPlace = async () => {
+    const place = currentPlace;
+    $('#weatherCity').textContent = place;
+    $('#weatherHeading').textContent = place;
+    forecastLoaded = false;
+    $('#weatherTemp').textContent = '--°';
+    $('#weatherDays').innerHTML = '<span class="weather-loading">AccuWeather tahmini yükleniyor…</span>';
+    if (popover.hidden || loading) return;
+    loading = true;
+    try {
+      const response = await fetch(`/api/weather?city=${encodeURIComponent(place)}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Tahmin alınamadı');
+      if (place !== currentPlace) return;
+      $('#weatherTemp').textContent = `${Math.round(data.current.temperature)}°`;
+      $('#weatherIcon').textContent = data.current.icon || '☁';
+      $('#weatherDays').innerHTML = data.days.map(day => `
+        <div class="weather-day"><span>${day.day}</span><span class="weather-day-icon" aria-hidden="true">${day.icon}</span><strong>${Math.round(day.max)}° <i>${Math.round(day.min)}°</i></strong></div>
+      `).join('');
+      forecastLoaded = true;
+    } catch (error) {
+      $('#weatherDays').innerHTML = `<span class="weather-loading">${error.message === 'API_KEY_MISSING' ? 'AccuWeather API anahtarı Vercel’e eklenmeli.' : 'Tahmin şu an alınamadı.'}</span>`;
+    } finally {
+      loading = false;
+    }
+  };
+
+  trigger.addEventListener('click', () => {
+    const open = popover.hidden;
+    setOpen(open);
+    if (open && !forecastLoaded) showPlace();
+  });
+  widget.addEventListener('mouseenter', () => {
+    if (window.matchMedia('(hover: hover)').matches) {
+      setOpen(true);
+      if (!forecastLoaded) showPlace();
+    }
+  });
+  widget.addEventListener('mouseleave', () => {
+    if (window.matchMedia('(hover: hover)').matches) setOpen(false);
+  });
+  document.addEventListener('click', event => {
+    if (!widget.contains(event.target)) setOpen(false);
+  });
+  popover.addEventListener('click', event => {
+    const button = event.target.closest('[data-weather-city]');
+    if (!button || button.dataset.weatherCity === currentPlace) return;
+    currentPlace = button.dataset.weatherCity;
+    popover.querySelectorAll('[data-weather-city]').forEach(item => item.classList.toggle('active', item === button));
+    showPlace();
+  });
+  trigger.title = 'Üzerine gelin veya dokunun: 5 günlük hava tahmini';
+}
+
 function setupTabs() {
   const tabsContainer = $('#tabs');
   tabsContainer.innerHTML = Object.entries(categories).map(([key, name]) => {
@@ -343,10 +409,17 @@ function renderCards(items) {
     const cardEl = clone.querySelector('.news-card');
 
     const imgEl = clone.querySelector('.card-image');
-    imgEl.src = item.imageUrl;
     imgEl.alt = item.title;
+    if (item.imageUrl) imgEl.src = item.imageUrl;
+    else imgEl.closest('.card-media').classList.add('image-unavailable');
     imgEl.onerror = () => {
-      cardEl.querySelector('.card-media').style.display = 'none';
+      if (item.imageUrl && !imgEl.dataset.proxyTried) {
+        imgEl.dataset.proxyTried = 'true';
+        imgEl.src = `/api/image?url=${encodeURIComponent(item.imageUrl)}`;
+        return;
+      }
+      imgEl.closest('.card-media').classList.add('image-unavailable');
+      imgEl.removeAttribute('src');
     };
 
     const catName = categories[activeCategory] || 'GÜNDEM';
@@ -406,6 +479,7 @@ function setupTheme() {
 // Başlat
 setupTheme();
 setupDate();
+setupWeather();
 setupTabs();
 setupModal();
 setupActions();

@@ -224,14 +224,11 @@ module.exports = async (req, res) => {
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
   const enriched = await Promise.all(rawItems.slice(0, 36).map(async item => {
-    if (!item.imageUrl) {
-      const details = await fetchArticleDetails(item.link, item.description);
-      return { ...item, imageUrl: details.imageUrl, description: details.description || item.description };
-    }
-    return item;
+    const details = await fetchArticleDetails(item.link, item.description);
+    return { ...item, imageUrl: details.imageUrl || item.imageUrl, description: details.description || item.description };
   }));
 
-  let withImages = enriched.filter(item => Boolean(item.imageUrl));
+  let withImages = enriched;
 
   if (isSports) {
     const isCl = item => {

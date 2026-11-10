@@ -5,10 +5,15 @@
     { "src": "style.css", "use": "@vercel/static" },
     { "src": "client.js", "use": "@vercel/static" },
     { "src": "hero-globe.jpg", "use": "@vercel/static" },
-    { "src": "api/news.js", "use": "@vercel/node" }
+    { "src": "favicon.svg", "use": "@vercel/static" },
+    { "src": "api/news.js", "use": "@vercel/node" },
+    { "src": "api/image.js", "use": "@vercel/node" },
+    { "src": "api/weather.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/news", "dest": "/api/news.js" },
+    { "src": "/api/image", "dest": "/api/image.js" },
+    { "src": "/api/weather", "dest": "/api/weather.js" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }

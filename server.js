@@ -236,21 +236,17 @@ async function news(category, userSources, customFeeds) {
     })
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-  // Görseli eksik olanlar için doğrudan sayfadan og:image çek
+  // Yayının ana görseli (og:image) varsa RSS küçük görseli yerine onu kullan
   const enriched = await Promise.all(rawItems.slice(0, 36).map(async item => {
-    if (!item.imageUrl) {
-      const details = await fetchArticleDetails(item.link, item.description);
-      return {
-        ...item,
-        imageUrl: details.imageUrl,
-        description: details.description || item.description
-      };
-    }
-    return item;
+    const details = await fetchArticleDetails(item.link, item.description);
+    return {
+      ...item,
+      imageUrl: details.imageUrl || item.imageUrl,
+      description: details.description || item.description
+    };
   }));
 
-  // Sadece gerçek görseli olan haberleri tut
-  let withImages = enriched.filter(item => Boolean(item.imageUrl));
+  let withImages = enriched;
 
   // Spor sekmesinde Şampiyonlar Ligi ve Türk Ligi haberlerini dengeli olarak harmanla
   if (isSports) {

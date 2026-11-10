@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Daily360 — Günlük Küratörlü Dünya Haberleri</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700;1,800&display=swap" rel="stylesheet">
@@ -20,6 +21,22 @@
         </a>
         <span class="header-pipe">|</span>
         <div class="header-date" id="today">10 KASIM 2026 SALI <span class="header-time" id="clock">00:00</span></div>
+        <div class="weather-widget" id="weatherWidget">
+          <button class="weather-trigger" id="weatherTrigger" type="button" aria-expanded="false" aria-controls="weatherForecast">
+            <span class="weather-icon" id="weatherIcon" aria-hidden="true">☁</span>
+            <span class="weather-temp" id="weatherTemp">--°</span>
+            <span class="weather-city" id="weatherCity">Edinburgh</span>
+          </button>
+          <section class="weather-popover" id="weatherForecast" aria-label="5 günlük hava tahmini" hidden>
+            <div class="weather-popover-heading"><strong id="weatherHeading">Edinburgh</strong><span>5 günlük tahmin</span></div>
+            <div class="weather-city-tabs" role="group" aria-label="Şehir seçimi">
+              <button class="weather-city-tab active" type="button" data-weather-city="Edinburgh">Edinburgh</button>
+              <button class="weather-city-tab" type="button" data-weather-city="Istanbul">İstanbul</button>
+            </div>
+            <div class="weather-days" id="weatherDays"><span class="weather-loading">Hava durumu yükleniyor…</span></div>
+            <div class="weather-credit">AccuWeather</div>
+          </section>
+        </div>
       </div>
       
       <div class="header-right">
