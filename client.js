@@ -80,7 +80,8 @@ function setupWeather() {
   const popover = $('#weatherForecast');
   let currentPlace = 'Edinburgh';
   let forecastLoaded = false;
-  let loading = false;
+  let weatherRequest = 0;
+  let closeTimer = null;
 
   const setOpen = open => {
     popover.hidden = !open;
@@ -88,18 +89,18 @@ function setupWeather() {
   };
   const showPlace = async () => {
     const place = currentPlace;
+    const request = ++weatherRequest;
     $('#weatherCity').textContent = place;
     $('#weatherHeading').textContent = place;
     forecastLoaded = false;
     $('#weatherTemp').textContent = '--°';
     $('#weatherDays').innerHTML = '<span class="weather-loading">Güvenilir hava tahmini yükleniyor…</span>';
-    if (popover.hidden || loading) return;
-    loading = true;
+    if (popover.hidden) return;
     try {
       const response = await fetch(`/api/weather?city=${encodeURIComponent(place)}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Tahmin alınamadı');
-      if (place !== currentPlace) return;
+      if (request !== weatherRequest || place !== currentPlace) return;
       $('#weatherTemp').textContent = `${Math.round(data.current.temperature)}°`;
       $('#weatherIcon').textContent = data.current.icon || '☁';
       $('#weatherDays').innerHTML = data.days.map(day => `
@@ -107,10 +108,14 @@ function setupWeather() {
       `).join('');
       forecastLoaded = true;
     } catch {
-      $('#weatherDays').innerHTML = '<span class="weather-loading">Tahmin şu an alınamadı.</span>';
-    } finally {
-      loading = false;
+      if (request === weatherRequest) $('#weatherDays').innerHTML = '<span class="weather-loading">Tahmin şu an alınamadı.</span>';
     }
+  };
+  const closeAfterPointerLeaves = () => {
+    window.clearTimeout(closeTimer);
+    closeTimer = window.setTimeout(() => {
+      if (!widget.matches(':hover') && !popover.matches(':hover')) setOpen(false);
+    }, 250);
   };
 
   trigger.addEventListener('click', () => {
@@ -119,20 +124,23 @@ function setupWeather() {
     if (open && !forecastLoaded) showPlace();
   });
   widget.addEventListener('mouseenter', () => {
+    window.clearTimeout(closeTimer);
     if (window.matchMedia('(hover: hover)').matches) {
       setOpen(true);
       if (!forecastLoaded) showPlace();
     }
   });
-  widget.addEventListener('mouseleave', () => {
-    if (window.matchMedia('(hover: hover)').matches) setOpen(false);
-  });
+  widget.addEventListener('mouseleave', closeAfterPointerLeaves);
+  popover.addEventListener('mouseenter', () => window.clearTimeout(closeTimer));
+  popover.addEventListener('mouseleave', closeAfterPointerLeaves);
   document.addEventListener('click', event => {
     if (!widget.contains(event.target)) setOpen(false);
   });
   popover.addEventListener('click', event => {
     const button = event.target.closest('[data-weather-city]');
-    if (!button || button.dataset.weatherCity === currentPlace) return;
+    if (!button) return;
+    setOpen(true);
+    if (button.dataset.weatherCity === currentPlace) return;
     currentPlace = button.dataset.weatherCity;
     popover.querySelectorAll('[data-weather-city]').forEach(item => item.classList.toggle('active', item === button));
     showPlace();
